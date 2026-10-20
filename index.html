@@ -1754,6 +1754,7 @@ async function xPushPBI(){
       document.getElementById('cM').appendChild(msg);document.getElementById('cM').scrollTop=document.getElementById('cM').scrollHeight;
     }else{
       aM('b','✅ Dataset "'+result.datasetName+'" created with '+result.rowCount+' rows. Open Power BI → Theia workspace to find it and create a report.');
+      if(result.reportError)aM('b','⚠️ Auto-report: '+result.reportError);
     }
   }catch(e){aM('b','Push failed: '+e.message)}
 }
