@@ -1755,7 +1755,7 @@ async function xPBIR(){
     const reportLogicalId=crypto.randomUUID();
     const modelLogicalId=crypto.randomUUID();
     // .pbip project manifest
-    zip.file(safeName+'.pbip',JSON.stringify({version:'1.0',artifacts:[{report:{path:safeName+'.Report'}},{dataset:{path:safeName+'.SemanticModel'}}]},null,2));
+    zip.file(safeName+'.pbip',JSON.stringify({version:'1.0',artifacts:[{report:{path:safeName+'.Report'}}]},null,2));
     // ── .Report folder ──
     const reportFolder=zip.folder(safeName+'.Report');
     reportFolder.file('.platform',JSON.stringify({$schema:'https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json',config:{version:'2.0',logicalId:reportLogicalId},metadata:{type:'Report',displayName:reportName}},null,2));
