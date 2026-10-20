@@ -1766,7 +1766,7 @@ async function xPBIR(){
     // ── .SemanticModel folder (minimal stub so byPath resolves) ──
     const modelFolder=zip.folder(safeName+'.SemanticModel');
     modelFolder.file('.platform',JSON.stringify({$schema:'https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json',config:{version:'2.0',logicalId:modelLogicalId},metadata:{type:'SemanticModel',displayName:reportName+' Model'}},null,2));
-    modelFolder.file('definition.bism',JSON.stringify({version:'4.0',compatibilityLevel:1604},null,2));
+    modelFolder.file('definition.pbism',JSON.stringify({version:'4.0',compatibilityLevel:1604},null,2));
     // Minimal model.bim with no tables — user will connect their own data source
     modelFolder.file('definition/model.tmdl','model Model\n  culture: en-US\n  defaultPowerBIDataSourceVersion: powerBI_V3\n');
     modelFolder.file('definition/tables/_tables.tmdl','');
