@@ -1749,9 +1749,15 @@ async function xPushPBI(){
     const result=await r.json();
     if(!result.success){aM('b','Push failed: '+(result.error||'Unknown error'));return}
     const msg=document.createElement('div');msg.className='cm b';msg.style.cssText='align-self:flex-start;background:var(--g1);border-radius:14px 14px 14px 4px;border:1px solid var(--g2);padding:10px 14px;font-size:13px;line-height:1.8';
-    msg.innerHTML='✅ <strong>"'+esc(result.datasetName)+'"</strong> pushed to Power BI ('+result.rowCount+' rows).<br>'+
-      '<a href="'+esc(result.quickCreateUrl)+'" target="_blank" style="display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:6px 14px;background:var(--p);color:#fff;border-radius:var(--r-sm);font-weight:600;font-size:12px;text-decoration:none">Create report in Power BI ↗</a>'+
-      '<br><a href="'+esc(result.datasetUrl)+'" target="_blank" style="color:var(--p);font-size:12px;text-decoration:none;margin-top:4px;display:inline-block">View dataset ↗</a>';
+    if(result.reportUrl){
+      msg.innerHTML='✅ Report <strong>"'+esc(result.datasetName)+'"</strong> created with '+result.rowCount+' rows.<br>'+
+        '<a href="'+esc(result.reportUrl)+'" target="_blank" style="display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:6px 14px;background:var(--p);color:#fff;border-radius:var(--r-sm);font-weight:600;font-size:12px;text-decoration:none">Open report in Power BI ↗</a>'+
+        '<br><a href="'+esc(result.datasetUrl)+'" target="_blank" style="color:var(--p);font-size:12px;text-decoration:none;margin-top:4px;display:inline-block">View dataset ↗</a>';
+    }else{
+      msg.innerHTML='✅ Dataset <strong>"'+esc(result.datasetName)+'"</strong> pushed ('+result.rowCount+' rows).<br>'+
+        '<a href="'+esc(result.datasetUrl)+'" target="_blank" style="display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:6px 14px;background:var(--p);color:#fff;border-radius:var(--r-sm);font-weight:600;font-size:12px;text-decoration:none">Open in Power BI ↗</a>'+
+        (result.reportError?'<br><span style="font-size:11px;color:var(--g5);margin-top:4px;display:inline-block">⚠️ '+esc(result.reportError)+'</span>':'');
+    }
     document.getElementById('cM').appendChild(msg);document.getElementById('cM').scrollTop=document.getElementById('cM').scrollHeight;
   }catch(e){aM('b','Push failed: '+e.message)}
 }
