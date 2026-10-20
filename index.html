@@ -1752,16 +1752,24 @@ async function xPBIR(){
     const zip=new JSZip();
     const reportName=result.reportName||'Theia Export';
     const safeName=reportName.replace(/[^a-z0-9 ]/gi,'-');
+    const reportLogicalId=crypto.randomUUID();
+    const modelLogicalId=crypto.randomUUID();
     // .pbip project manifest
-    zip.file(safeName+'.pbip',JSON.stringify({version:'1.0',artifacts:[{report:{path:safeName+'.Report'}}]},null,2));
-    // .Report folder contents
+    zip.file(safeName+'.pbip',JSON.stringify({version:'1.0',artifacts:[{report:{path:safeName+'.Report'}},{dataset:{path:safeName+'.SemanticModel'}}]},null,2));
+    // ── .Report folder ──
     const reportFolder=zip.folder(safeName+'.Report');
-    // .platform file
-    reportFolder.file('.platform',JSON.stringify({$schema:'https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json',config:{version:'2.0',logicalId:crypto.randomUUID()},metadata:{type:'Report',displayName:reportName}},null,2));
-    // All PBIR definition files
+    reportFolder.file('.platform',JSON.stringify({$schema:'https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json',config:{version:'2.0',logicalId:reportLogicalId},metadata:{type:'Report',displayName:reportName}},null,2));
+    // All PBIR definition files from the Worker
     Object.entries(result.files).forEach(([path,content])=>{
       reportFolder.file(path,content);
     });
+    // ── .SemanticModel folder (minimal stub so byPath resolves) ──
+    const modelFolder=zip.folder(safeName+'.SemanticModel');
+    modelFolder.file('.platform',JSON.stringify({$schema:'https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json',config:{version:'2.0',logicalId:modelLogicalId},metadata:{type:'SemanticModel',displayName:reportName+' Model'}},null,2));
+    modelFolder.file('definition.bism',JSON.stringify({version:'4.0',compatibilityLevel:1604},null,2));
+    // Minimal model.bim with no tables — user will connect their own data source
+    modelFolder.file('definition/model.tmdl','model Model\n  culture: en-US\n  defaultPowerBIDataSourceVersion: powerBI_V3\n');
+    modelFolder.file('definition/tables/_tables.tmdl','');
     // Generate ZIP and download
     const blob=await zip.generateAsync({type:'blob'});
     const a=document.createElement('a');
